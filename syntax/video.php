@@ -41,6 +41,7 @@ class syntax_plugin_html5video_video extends DokuWiki_Syntax_Plugin {
         //   Manager.
         // http://gskinner.com/RegExr is a big help
         $this->Lexer->addSpecialPattern('\{\{[^}]*(?:(?:webm)|(?:ogv)|(?:mp4))(?:\|(?:\d{2,4}x\d{2,4})?(?:\|(?:loop)?,?(?:autoplay)?(?:,loop)?)?)? ?\}\}',$mode,'plugin_html5video_video');
+    }
 
     public function handle($match, $state, $pos, &$handler){
         $params = substr($match, strlen('{{'), - strlen('}}')); //Strip markup
