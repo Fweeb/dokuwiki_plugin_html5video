@@ -40,7 +40,7 @@ class syntax_plugin_html5video_video extends DokuWiki_Syntax_Plugin {
         //   plugin-specific prefix. We can use syntax directly from Media
         //   Manager.
         // http://gskinner.com/RegExr is a big help
-        $this->Lexer->addSpecialPattern('\{\{[^}]*(?:(?:webm)|(?:ogv)|(?:mp4))(?:\|(?:\d{2,4}x\d{2,4})?(?:\|(?:loop)?,?(?:autoplay)?(?:,loop)?)?)? ?\}\}',$mode,'plugin_html5video_video');
+        $this->Lexer->addSpecialPattern('\{\{(?:video>)[^}]*(?:\|(?:\d{2,4}x\d{2,4})?(?:\|(?:loop)?,?(?:autoplay)?(?:,loop)?)?)? ?\}\}',$mode,'plugin_html5video_video');
     }
 
     public function handle($match, $state, $pos, &$handler){
@@ -88,10 +88,11 @@ class syntax_plugin_html5video_video extends DokuWiki_Syntax_Plugin {
             $video_url = ml($video_url);
         }
 
-        if(substr($video_url, -4) != 'webm' && substr($video_url, -3) != 'ogv' && substr($video_url, -3) != 'mp4') {
-            $renderer->doc .= "Error: The video must be in webm, ogv, or mp4 format.<br />" . $video_url;
-            return false;
-        }
+		if(substr($video_url, 0, 6) != 'video>') {
+			$renderer->doc .= "Error: Prefix video> not found.<br />";
+			return false;
+		}
+		$video_url = substr($video_url, 6);
 
         if(is_null($video_size) or !substr_count($video_size, 'x')) {
             $width  = 640;
@@ -131,7 +132,11 @@ class syntax_plugin_html5video_video extends DokuWiki_Syntax_Plugin {
             }
         }
 
-        $obj = '<video src="' . $video_url . '" width="' . $width . '" height="' . $height . '" controls="controls" ' . $attr . ' />';
+        $obj = '<video width="' . $width . '" height="' . $height . '" controls="controls" ' . $attr . '>';
+		$obj .= '<source src="' . $video_url . '.webm" type="video/webm">';
+		$obj .= '<source src="' . $video_url . '.ogg" type="video/ogg">';
+		$obj .= '<source src="' . $video_url . '.mp4" type="video/mp4">';
+		$obj .= '</video>';
         if($align != "") {
             $obj = '<div style="width: ' . $width . 'px; ' . $align . '">' . $obj . '</div>';
         }
