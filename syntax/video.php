@@ -40,7 +40,7 @@ class syntax_plugin_html5video_video extends DokuWiki_Syntax_Plugin {
         //   plugin-specific prefix. We can use syntax directly from Media
         //   Manager.
         // http://gskinner.com/RegExr is a big help
-        $this->Lexer->addSpecialPattern('\{\{[^}]*(?:\|(?:\d{2,4}x\d{2,4})?(?:\|(?:loop)?,?(?:autoplay)?(?:,loop)?)?)? ?\}\}',$mode,'plugin_html5video_video');
+        $this->Lexer->addSpecialPattern('\{\{video>[^}]*(?:\|(?:\d{2,4}x\d{2,4})?(?:\|(?:loop)?,?(?:autoplay)?(?:,loop)?)?)? ?\}\}',$mode,'plugin_html5video_video');
     }
 
     public function handle($match, $state, $pos, &$handler){
@@ -87,6 +87,11 @@ class syntax_plugin_html5video_video extends DokuWiki_Syntax_Plugin {
         if(!substr_count($video_url, '/')) {
             $video_url = ml($video_url);
         }
+
+		if(substr($video_url, 0, 6) != 'video>') {
+			return false;
+		}
+		$video_url = substr($video_url, 6);
 
         if(is_null($video_size) or !substr_count($video_size, 'x')) {
             $width  = 640;
