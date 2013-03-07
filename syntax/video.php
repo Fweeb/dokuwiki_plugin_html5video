@@ -131,7 +131,7 @@ class syntax_plugin_html5video_video extends DokuWiki_Syntax_Plugin {
             }
         }
 
-        $obj = '<video src="' . $video_url . '" width="' . $width . '" height="' . $height . '" controls="controls" ' . $attr . ' />';
+        $obj = '<video src="' . $video_url . '" width="' . $width . '" height="' . $height . '" controls="controls" ' . $attr . '></video>';
         if($align != "") {
             $obj = '<div style="width: ' . $width . 'px; ' . $align . '">' . $obj . '</div>';
         }
