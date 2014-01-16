@@ -1,3 +1,5 @@
-* Allow for graceful fallback to other web video formats for different browsers
+* Allow for graceful fallback to other web video formats for different browsers - DONE 2014/01/16
+
+* Handle type in source element
 
 * Might be a good idea to use a stylesheet instead of inline styles for alignment
