@@ -124,10 +124,6 @@ class syntax_plugin_html5video_video extends DokuWiki_Syntax_Plugin {
             }
         }
 
-        /*for($i=0; $i<$nb; ++$i) {
-            $renderer->doc .= $video_urls[$i] . " -> " . $video_url_types[$i] ."<br />";
-        }*/
-
         if(is_null($video_size) or !substr_count($video_size, 'x')) {
             $width  = 640;
             $height = 360;
