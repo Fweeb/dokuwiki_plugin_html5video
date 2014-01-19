@@ -102,17 +102,31 @@ class syntax_plugin_html5video_video extends DokuWiki_Syntax_Plugin {
             $align = "";
         }
 
+        $video_url_types = array(); // video url types array
         $nb = count($video_urls);
         for($i=0; $i<$nb; ++$i) {
             if(!substr_count($video_urls[$i], '/')) {
                 $video_urls[$i] = ml($video_urls[$i]);
             }
 
-            if(substr($video_urls[$i], -4) != 'webm' && substr($video_urls[$i], -3) != 'ogv' && substr($video_urls[$i], -3) != 'mp4') {
+            if(substr($video_urls[$i], -4) == 'webm') {
+                $video_url_types[$i] = "video/webm";
+            }
+            else if(substr($video_urls[$i], -3) == 'ogv') {
+                $video_url_types[$i] = "video/ogg";
+            }
+            else if(substr($video_urls[$i], -3) == 'mp4') {
+                $video_url_types[$i] = "video/mp4";
+            }
+            else {
                 $renderer->doc .= "Error: The video must be in webm, ogv, or mp4 format.<br />" . $video_urls[$i];
                 return false;
             }
         }
+
+        /*for($i=0; $i<$nb; ++$i) {
+            $renderer->doc .= $video_urls[$i] . " -> " . $video_url_types[$i] ."<br />";
+        }*/
 
         if(is_null($video_size) or !substr_count($video_size, 'x')) {
             $width  = 640;
@@ -154,9 +168,8 @@ class syntax_plugin_html5video_video extends DokuWiki_Syntax_Plugin {
 
         $obj = '<video width="' . $width . '" height="' . $height . '" controls="controls" ' . $attr . '>';
         for($i=0; $i<$nb; ++$i) {
-            $obj .= '<source src="' . $video_urls[$i] . '">';
+            $obj .= '<source src="' . $video_urls[$i] . '" type="' . $video_url_types[$i] . '">';
         }
-        // TODO : handle types : type="video/webm" type="video/ogg" type="video/mp4"
         $obj .= '</video>';
 
         if($align != "") {
