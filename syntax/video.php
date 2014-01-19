@@ -70,7 +70,6 @@ class syntax_plugin_html5video_video extends DokuWiki_Syntax_Plugin {
         if($mode != 'xhtml') return false;
 
         list($state, $params) = $data;
-        //list($video_align, $video_url, $video_size, $video_attr) = $params;
 
         $video_align = $params[0];
 
@@ -79,9 +78,7 @@ class syntax_plugin_html5video_video extends DokuWiki_Syntax_Plugin {
         // find video url and parameters
         $nb = count($params);
         for($i=1; $i<$nb; ++$i) {
-            //$renderer->doc .= "params[".$i."] = ".$params[$i]."<br />";
             if(preg_match("((^.*\.mp4$)|(^.*\.ogv$)|(^.*\.webm$))", $params[$i]) == 1) {
-                //$renderer->doc .= "is video<br />";
                 $video_urls[] = $params[$i];
             }
             else {
@@ -91,17 +88,6 @@ class syntax_plugin_html5video_video extends DokuWiki_Syntax_Plugin {
 
         $video_size = $params[$i];
         $video_attr = $params[$i+1];
-
-
-        /*foreach ($video_urls as $video_url) {
-            $renderer->doc .= "video_url : ".$video_url."<br />";
-        }*/
-
-        /*$renderer->doc .= "state : ".$state."<br />";
-        $renderer->doc .= "video_align : ".$video_align."<br />";
-        $renderer->doc .= "video_url : ".$video_url."<br />";
-        $renderer->doc .= "video_size : ".$video_size."<br />";
-        $renderer->doc .= "video_attr : ".$video_attr."<br />";*/
 
         if($video_align == "center") {
             $align = "margin: 0 auto;";
@@ -126,7 +112,6 @@ class syntax_plugin_html5video_video extends DokuWiki_Syntax_Plugin {
                 $renderer->doc .= "Error: The video must be in webm, ogv, or mp4 format.<br />" . $video_urls[$i];
                 return false;
             }
-            //$renderer->doc .= "video_url new : ".$video_urls[$i]."<br />";
         }
 
         if(is_null($video_size) or !substr_count($video_size, 'x')) {
