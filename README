@@ -9,6 +9,9 @@ If you install this plugin manually, make sure it is installed in
 lib/plugins/html5video/ - if the folder is called different it
 will not work!
 
+Example :
+{{ videos:vid.webm|videos:vid.ogv|videos:vid.mp4|320x240|loop }}
+
 Please refer to http://www.dokuwiki.org/plugins for additional info
 on how to install plugins in DokuWiki.
 
