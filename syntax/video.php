@@ -4,12 +4,13 @@
  *
  * @license GPL 2 http://www.gnu.org/licenses/gpl-2.0.html
  * @author  Jason van Gumster (Fweeb) <jason@monsterjavaguns.com>
+ * Updated by Maxime Morel <maxime.morel69@gmail.com>
  *
  * Parts borrowed from the videogg plugin written by Ludovic Kiefer,
  * which is based on Christophe Benz' Dailymotion plugin, which, in turn,
  * is based on Ikuo Obataya's Youtube plugin. Whew...
  *
- * Currently only supports webm videos
+ * Supports ogv, webm, mp4 videos
  */
 
 // must be run within Dokuwiki
@@ -36,7 +37,7 @@ class syntax_plugin_html5video_video extends DokuWiki_Syntax_Plugin {
     }
 
     public function connectTo($mode) {
-        // Kind of a nasty regex, but it allows us to avoid using a 
+        // Kind of a nasty regex, but it allows us to avoid using a
         //   plugin-specific prefix. We can use syntax directly from Media
         //   Manager.
         // http://gskinner.com/RegExr is a big help
@@ -49,7 +50,7 @@ class syntax_plugin_html5video_video extends DokuWiki_Syntax_Plugin {
             if(substr_compare($params, ' ', -1, 1) === 0) { // Space a front and back = centered
                 $params = trim($params);
                 $params = 'center|' . $params;
-            } 
+            }
             else { // Only space at front = right-aligned
                 $params = trim($params);
                 $params = 'right|' . $params;
@@ -69,7 +70,24 @@ class syntax_plugin_html5video_video extends DokuWiki_Syntax_Plugin {
         if($mode != 'xhtml') return false;
 
         list($state, $params) = $data;
-        list($video_align, $video_url, $video_size, $video_attr) = $params;
+
+        $video_align = $params[0];
+
+        $video_urls = array(); // video url array
+
+        // find video url and parameters
+        $nb = count($params);
+        for($i=1; $i<$nb; ++$i) {
+            if(preg_match("((^.*\.mp4$)|(^.*\.ogv$)|(^.*\.webm$))", $params[$i]) == 1) {
+                $video_urls[] = $params[$i];
+            }
+            else {
+                break;
+            }
+        }
+
+        $video_size = $params[$i];
+        $video_attr = $params[$i+1];
 
         if($video_align == "center") {
             $align = "margin: 0 auto;";
@@ -84,13 +102,26 @@ class syntax_plugin_html5video_video extends DokuWiki_Syntax_Plugin {
             $align = "";
         }
 
-        if(!substr_count($video_url, '/')) {
-            $video_url = ml($video_url);
-        }
+        $video_url_types = array(); // video url types array
+        $nb = count($video_urls);
+        for($i=0; $i<$nb; ++$i) {
+            if(!substr_count($video_urls[$i], '/')) {
+                $video_urls[$i] = ml($video_urls[$i]);
+            }
 
-        if(substr($video_url, -4) != 'webm' && substr($video_url, -3) != 'ogv' && substr($video_url, -3) != 'mp4') {
-            $renderer->doc .= "Error: The video must be in webm, ogv, or mp4 format.<br />" . $video_url;
-            return false;
+            if(substr($video_urls[$i], -4) == 'webm') {
+                $video_url_types[$i] = "video/webm";
+            }
+            else if(substr($video_urls[$i], -3) == 'ogv') {
+                $video_url_types[$i] = "video/ogg";
+            }
+            else if(substr($video_urls[$i], -3) == 'mp4') {
+                $video_url_types[$i] = "video/mp4";
+            }
+            else {
+                $renderer->doc .= "Error: The video must be in webm, ogv, or mp4 format.<br />" . $video_urls[$i];
+                return false;
+            }
         }
 
         if(is_null($video_size) or !substr_count($video_size, 'x')) {
@@ -131,7 +162,12 @@ class syntax_plugin_html5video_video extends DokuWiki_Syntax_Plugin {
             }
         }
 
-        $obj = '<video src="' . $video_url . '" width="' . $width . '" height="' . $height . '" controls="controls" ' . $attr . '></video>';
+        $obj = '<video width="' . $width . '" height="' . $height . '" controls="controls" ' . $attr . '>';
+        for($i=0; $i<$nb; ++$i) {
+            $obj .= '<source src="' . $video_urls[$i] . '" type="' . $video_url_types[$i] . '">';
+        }
+        $obj .= '</video>';
+
         if($align != "") {
             $obj = '<div style="width: ' . $width . 'px; ' . $align . '">' . $obj . '</div>';
         }

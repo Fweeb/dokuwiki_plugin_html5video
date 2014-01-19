@@ -1,7 +1,7 @@
 base   html5video
-author Jason van Gumster (Fweeb)
-email  jason@monsterjavaguns.com
-date   2013-03-07
+author Jason van Gumster (Fweeb) & Maxime Morel
+email  jason@monsterjavaguns.com & maxime.morel69@gmail.com
+date   2014-01-16
 name   html5video plugin
 desc   Embeds video using HTML5 syntax
 url    http://www.dokuwiki.org/plugin:html5video
