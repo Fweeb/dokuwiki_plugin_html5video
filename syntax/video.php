@@ -43,7 +43,7 @@ class syntax_plugin_html5video_video extends DokuWiki_Syntax_Plugin {
         $this->Lexer->addSpecialPattern('\{\{[^}]*(?:(?:webm)|(?:ogv)|(?:mp4))(?:\|(?:\d{2,4}x\d{2,4})?(?:\|(?:loop)?,?(?:autoplay)?(?:,loop)?)?)? ?\}\}',$mode,'plugin_html5video_video');
     }
 
-    public function handle($match, $state, $pos, &$handler){
+    public function handle($match, $state, $pos, Doku_Handler $handler){
         $params = substr($match, strlen('{{'), - strlen('}}')); //Strip markup
         if(strpos($params, ' ') === 0) { // Space as first character
             if(substr_compare($params, ' ', -1, 1) === 0) { // Space a front and back = centered
@@ -65,7 +65,7 @@ class syntax_plugin_html5video_video extends DokuWiki_Syntax_Plugin {
         return array(state, explode('|', $params));
     }
 
-    public function render($mode, &$renderer, $data) {
+    public function render($mode, Doku_Renderer $renderer, $data) {
         if($mode != 'xhtml') return false;
 
         list($state, $params) = $data;
